@@ -1,0 +1,38 @@
+import urllib.request as urllib2
+import subprocess
+import os
+import smtplib
+
+
+#check to see if java is installed
+version = os.system("java -version")
+
+
+def download(cookie, license, url, filename):
+   print(url)
+   print(filename)
+   opener = urllib2.build_opener()
+   opener.addheaders.append((cookie, license))
+   f = opener.open(url)
+   with open(filename, 'wb+') as save:
+       save.write(f.read())
+
+cookie = 'Cookie'
+_license = 'oraclelicense=accept-securebackup-cookie'
+url = 'http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-windows-x64.exe'
+filename = 'jdk-8u131-windows-x64.exe'
+
+#download and install java if not present
+if type(version) is int and version == 1: 
+    download(cookie, _license, url, filename)
+    subprocess.call([filename], shell=True)
+
+#send email status    
+server = smtplib.SMTP('smtp.gmail.com', 587)
+server.starttls()
+
+server.login("#email", "#password")
+
+msg = "Status update. Java has been installed."
+
+server.sendmail("#Sender", "#Reciever", msg)
